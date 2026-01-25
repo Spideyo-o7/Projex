@@ -2,31 +2,13 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
-import { metaImagesPlugin } from "./vite-plugin-meta-images";
 import { readFileSync, existsSync } from "fs";
 
 // Check if mkcert certificates exist (only for local development)
-const certDir = path.resolve(import.meta.dirname, "certs");
-const certPath = path.join(certDir, "localhost+2.pem");
-const keyPath = path.join(certDir, "localhost+2-key.pem");
-const useHttps = process.env.NODE_ENV === "development" && existsSync(certPath) && existsSync(keyPath);
+const useHttps = process.env.NODE_ENV === "development" && existsSync(path.join(process.cwd(), "certs/localhost+2.pem"));
 
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss(),
-    ...(process.env.NODE_ENV !== "production" &&
-      process.env.REPL_ID !== undefined
-      ? [
-        await import("@replit/vite-plugin-cartographer").then((m) =>
-          m.cartographer(),
-        ),
-        await import("@replit/vite-plugin-dev-banner").then((m) =>
-          m.devBanner(),
-        ),
-      ]
-      : []),
-  ],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "client", "src"),
@@ -53,8 +35,8 @@ export default defineConfig({
     },
     ...(useHttps && {
       https: {
-        cert: readFileSync(certPath),
-        key: readFileSync(keyPath),
+        cert: readFileSync(path.join(process.cwd(), "certs/localhost+2.pem")),
+        key: readFileSync(path.join(process.cwd(), "certs/localhost+2-key.pem")),
       },
     }),
   },
