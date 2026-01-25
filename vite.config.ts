@@ -5,11 +5,11 @@ import path from "path";
 import { metaImagesPlugin } from "./vite-plugin-meta-images";
 import { readFileSync, existsSync } from "fs";
 
-// Check if mkcert certificates exist
+// Check if mkcert certificates exist (only for local development)
 const certDir = path.resolve(import.meta.dirname, "certs");
 const certPath = path.join(certDir, "localhost+2.pem");
 const keyPath = path.join(certDir, "localhost+2-key.pem");
-const useHttps = existsSync(certPath) && existsSync(keyPath);
+const useHttps = process.env.NODE_ENV === "development" && existsSync(certPath) && existsSync(keyPath);
 
 export default defineConfig({
   plugins: [
