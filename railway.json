@@ -1,0 +1,6 @@
+{
+    "root": ".",
+    "buildCommand": "npm run build",
+    "startCommand": "NODE_ENV=production node dist/index.cjs",
+    "envParsing": "json"
+}
