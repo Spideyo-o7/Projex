@@ -7,6 +7,13 @@ import { readFileSync, existsSync } from "fs";
 // Check if mkcert certificates exist (only for local development)
 const useHttps = process.env.NODE_ENV === "development" && existsSync(path.join(process.cwd(), "certs/localhost+2.pem"));
 
+const httpsConfig = useHttps ? {
+  https: {
+    cert: readFileSync(path.join(process.cwd(), "certs/localhost+2.pem")),
+    key: readFileSync(path.join(process.cwd(), "certs/localhost+2-key.pem")),
+  },
+} : {};
+
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
@@ -33,11 +40,6 @@ export default defineConfig({
       strict: true,
       deny: ["**/.*"],
     },
-    ...(useHttps && {
-      https: {
-        cert: readFileSync(path.join(process.cwd(), "certs/localhost+2.pem")),
-        key: readFileSync(path.join(process.cwd(), "certs/localhost+2-key.pem")),
-      },
-    }),
+    ...httpsConfig,
   },
 });
