@@ -6,7 +6,7 @@
   "scripts": {
     "dev:client": "vite dev --port 5000",
     "dev": "NODE_ENV=development npx tsx server/index.ts",
-    "build": "npx vite build && echo 'Build complete'",
+    "build": "npx vite build --outDir dist/public && echo 'Build complete'",
     "start": "npx tsx server/index.ts",
     "check": "tsc",
     "db:push": "drizzle-kit push"
