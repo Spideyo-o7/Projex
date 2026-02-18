@@ -6,6 +6,15 @@ import { createServer as createHttpsServer } from "https";
 import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 
+// Augment Express Request type to include rawBody
+declare global {
+  namespace Express {
+    interface Request {
+      rawBody?: Buffer;
+    }
+  }
+}
+
 const app = express();
 
 // Use HTTPS in development with mkcert certificates
@@ -27,7 +36,7 @@ if (useHttps) {
 
 app.use(
   express.json({
-    verify: (req, _res, buf) => {
+    verify: (req: any, _res, buf) => {
       req.rawBody = buf;
     },
   }),
