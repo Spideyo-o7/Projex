@@ -114,7 +114,25 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || "8080", 10);
   const host = process.env.HOST || "0.0.0.0";
   const protocol = useHttps ? "https" : "http";
-  httpServer.listen(port, host, () => {
+
+  const server = httpServer.listen(port, host, () => {
     log(`serving on ${protocol}://${host}:${port}`);
+  });
+
+  // Graceful shutdown for Railway
+  process.on("SIGTERM", () => {
+    log("SIGTERM received, shutting down gracefully");
+    server.close(() => {
+      log("Server closed");
+      process.exit(0);
+    });
+  });
+
+  process.on("SIGINT", () => {
+    log("SIGINT received, shutting down gracefully");
+    server.close(() => {
+      log("Server closed");
+      process.exit(0);
+    });
   });
 })();
